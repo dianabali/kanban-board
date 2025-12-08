@@ -1,168 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simple Kanban Board</title>
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simple Kanban Board</title>
+<style>
     @import url('https://fonts.googleapis.com/css2?family=Delius&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
     
     * {
         box-sizing: border-box;
+        font-family: 'Nunito', Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: 'Nunito', Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
+        margin: 0;
+        background: #fff3fc;
+        padding: 20px;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #task-input {
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        background: #fff;
+        border: 2px solid #000000;
+        box-shadow: 3px 3px 0 #000000;
+    }
+
+    #column-select {
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        background: #fff;
+        border: 2px solid #000000;
+        box-shadow: 3px 3px 0 #000000;
+    }
+
+    #add-button {
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        background: #fff;
+        color: #000;
+        border: 2px solid #000000;
+        box-shadow: 3px 3px 0 #000000;
+        cursor: pointer;
     }
 
     #add-form {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      max-width: 600px;
-      margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        max-width: 600px;
+        margin: 0 auto 20px;
     }
 
     #add-form input, #add-form select, #add-form button {
-      padding: 10px;
-      font-size: 14px;
+        padding: 10px;
+        font-size: 14px;
     }
 
     #columns {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-top: 20px;
     }
 
     .column {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      min-height: 300px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+        background: white;
+        border-radius: 10px;
+        min-height: 300px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        background: #fff;
+        color: #000;
+        border: 2px solid #000000;
+        box-shadow: 3px 3px 0 #000000;
+        cursor: pointer;
+        
     }
 
     .column h2 {
-      margin: 0 0 10px;
-      font-size: 18px;
+        margin: 0 0 10px;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .item {
-      background: #eee;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      cursor: grab;
+        background: #eee;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        cursor: grab;
     }
 
     .item.dragging {
-      opacity: 0.4;
+        opacity: 0.4;
     }
 
     .delete-btn {
-      float: right;
-      font-size: 12px;
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      padding: 2px 6px;
-      border-radius: 4px;
-      cursor: pointer;
+        float: right;
+        font-size: 12px;
+        background: #000;
+        color: white;
+        border: none;
+        padding: 2px 6px;
+        border-radius: 4px;
+        cursor: pointer;
     }
-  </style>
+</style>
 </head>
 <body>
-  <h1>Simple Kanban Board</h1>
+    <h1>Simple Kanban Board</h1>
 
-  <form id="add-form">
-    <input type="text" id="task-input" placeholder="New task..." required />
-    <select id="column-select">
-      <option value="todo">To Do</option>
-      <option value="inprogress">In Progress</option>
-      <option value="inreview">In Review</option>
-      <option value="done">Done</option>
-    </select>
-    <button type="submit">Add</button>
-  </form>
+    <form id="add-form">
+        <input type="text" id="task-input" placeholder="New task..." required />
+        <select id="column-select">
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="inreview">In Review</option>
+            <option value="done">Done</option>
+        </select>
+        <button type="submit" id="add-button">Add</button>
+    </form>
 
-  <div id="columns">
-    <div class="column" id="todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
-      <h2>To Do</h2>
+    <div id="columns">
+        <div class="column" id="todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
+            <h2>TO DO</h2>
+        </div>
+
+        <div class="column" id="inprogress" ondragover="allowDrop(event)" ondrop="drop(event, 'inprogress')">
+            <h2>IN PROGRESS</h2>
+        </div>
+
+        <div class="column" id="inreview" ondragover="allowDrop(event)" ondrop="drop(event, 'inreview')">
+            <h2>IN REVIEW</h2>
+        </div>
+
+        <div class="column" id="done" ondragover="allowDrop(event)" ondrop="drop(event, 'done')">
+            <h2>DONE</h2>
+        </div>
     </div>
 
-    <div class="column" id="inprogress" ondragover="allowDrop(event)" ondrop="drop(event, 'inprogress')">
-      <h2>In Progress</h2>
-    </div>
+    <script>
+        const STORAGE_KEY = 'kanban-board';
+        
+        let draggedItem = null;
 
-    <div class="column" id="inreview" ondragover="allowDrop(event)" ondrop="drop(event, 'inreview')">
-      <h2>In Review</h2>
-    </div>
+        function saveBoard() {
+            const data = {};
+            document.querySelectorAll('.column').forEach(col => {
+                const items = [...col.querySelectorAll('.item')].map(i => i.outerHTML);
+                data[col.id] = items;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
 
-    <div class="column" id="done" ondragover="allowDrop(event)" ondrop="drop(event, 'done')">
-      <h2>Done</h2>
-    </div>
-  </div>
 
-  <script>
-    let draggedItem = null;
+        function loadBoard() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
 
-    document.getElementById("add-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const text = document.getElementById("task-input").value;
-      const column = document.getElementById("column-select").value;
-      addItem(text, column);
-      document.getElementById("task-input").value = "";
-    });
+            const data = JSON.parse(raw);
 
-    function addItem(text, columnId) {
-      const column = document.getElementById(columnId);
-      const item = document.createElement("div");
-      item.className = "item";
-      item.draggable = true;
-      item.innerHTML = `${text} <button class='delete-btn' onclick='deleteItem(this)'>X</button>`;
+            for (const col in data) {
+                const column = document.getElementById(col);
 
-      item.addEventListener("dragstart", dragStart);
-      item.addEventListener("dragend", dragEnd);
+                // Keep the h2, remove only old items
+                column.querySelectorAll('.item').forEach(i => i.remove());
 
-      column.appendChild(item);
-    }
+                data[col].forEach(itemHTML => {
+                    const div = document.createElement('div');
+                    div.innerHTML = itemHTML;
+                    const item = div.firstChild;
 
-    function deleteItem(btn) {
-      btn.parentElement.remove();
-    }
+                    item.addEventListener("dragstart", dragStart);
+                    item.addEventListener("dragend", dragEnd);
 
-    function dragStart(event) {
-      draggedItem = event.target;
-      event.target.classList.add("dragging");
-    }
+                    column.appendChild(item);
+                });
+            }
+        }
 
-    function dragEnd(event) {
-      event.target.classList.remove("dragging");
-      draggedItem = null;
-    }
 
-    function allowDrop(event) {
-      event.preventDefault();
-    }
+        function reattachEvents() {
+            document.querySelectorAll('.item').forEach(item => {
+                item.draggable = true;
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('dragend', dragEnd);
+            });
+        }
 
-    function drop(event, columnId) {
-      event.preventDefault();
-      if (draggedItem) {
-        document.getElementById(columnId).appendChild(draggedItem);
-      }
-    }
-  </script>
+        function dragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+        }
+
+        function dragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        document.getElementById('add-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = document.getElementById('task-input').value;
+            const columnId = document.getElementById('column-select').value;
+            addItem(text, columnId);
+            document.getElementById('task-input').value = '';
+        });
+
+        loadBoard();
+
+        function addItem(text, columnId) {
+            const column = document.getElementById(columnId);
+            const item = document.createElement("div");
+            item.className = "item";
+            item.draggable = true;
+            item.innerHTML = `${text} <button class='delete-btn' onclick='deleteItem(this)'>X</button>`;
+
+            item.addEventListener("dragstart", dragStart);
+            item.addEventListener("dragend", dragEnd);
+
+            column.appendChild(item);
+            saveBoard();
+        }
+
+        function deleteItem(btn) {
+            btn.parentElement.remove();
+            saveBoard();
+        }
+
+        function drop(event, columnId) {
+            event.preventDefault();
+            if (draggedItem) {
+                document.getElementById(columnId).appendChild(draggedItem);
+                saveBoard();
+            }
+        }
+    </script>
 </body>
 </html>
