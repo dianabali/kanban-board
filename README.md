@@ -21,7 +21,7 @@ The board contain four columns:
 - Google Fonts
 
 ## Installation guide
-1. Copy or download this repository: `https://github.com/dianabali/kanban-board`.
+1. Copy or download this repository: `https://github.com/dianabali/kanban-board.git`.
 2. Open `index.html` in your browser.
 
 ## Preview
