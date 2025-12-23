@@ -23,3 +23,6 @@ The board contain four columns:
 ## Installation guide
 1. Copy or download this repository: `https://github.com/dianabali/kanban-board`.
 2. Open `index.html` in your browser.
+
+## Preview
+![Screenshot](preview/image.png)
